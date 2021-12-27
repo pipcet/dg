@@ -63,4 +63,7 @@ $(BUILD)/packages.tar: $(BUILD)/debian/script.bash $(BUILD)/qemu-kernel $(BUILD)
 	tar xvf $@
 	rm -f tmp
 
+{deversion-udeb}:
+	for a in *_*.udeb; do b=$(echo "$$a" | sed -e 's/_.*\./\./g'); cp "$$a" "$$b"; done
+
 {release-udeb}: $(addsuffix {release},$(wildcard $(PACKAGE)*.udeb))
