@@ -50,12 +50,12 @@ $(BUILD)/debian/script.bash: | $(BUILD)/debian/
 	echo "cd /root; git clone $(SELFURL) $(PACKAGE)"; \
 	echo "cd /root/$(PACKAGE); ./debian/rules build"; \
 	echo "cd /root/$(PACKAGE); ./debian/rules binary"; \
-	echo "ls /root/*.udeb | cpio -i | uuencode packages.cpio > /dev/vda") > $@
+	echo "ls /root/*.udeb | tar cv | uuencode packages.tar > /dev/vda") > $@
 
-$(BUILD)/packages.cpio: $(BUILD)/debian/script.bash $(BUILD)/qemu-kernel $(BUILD)/debian/root1.cpio.gz | $(BUILD)/
+$(BUILD)/packages.tar: $(BUILD)/debian/script.bash $(BUILD)/qemu-kernel $(BUILD)/debian/root1.cpio.gz | $(BUILD)/
 	dd if=/dev/zero of=tmp bs=128M count=1
 	uuencode /dev/stdout < $< | dd conv=notrunc of=tmp
 	qemu-system-aarch64 -drive if=virtio,index=0,media=disk,driver=raw,file=tmp -machine virt -cpu max -kernel $(BUILD)/qemu-kernel -m 7g -serial stdio -initrd $(BUILD)/debian/root1.cpio.gz -nic user,model=virtio -monitor none -smp 8 -nographic
 	uudecode -o $@ < tmp
-	cpio -id < $@
+	tar xvf $@
 	rm -f tmp
