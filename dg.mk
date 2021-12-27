@@ -44,7 +44,7 @@ $(BUILD)/debian/script.bash: | $(BUILD)/debian/
 	echo "apt-get -y update"; \
 	echo "apt-get -y dist-upgrade"; \
 	echo "apt-get -y install ca-certificates || true"; \
-	echo "apt-get -y build-dep $(PACKAGE) debian-installer"; \
+	echo "apt-get -y build-dep $(PACKAGE)"; \
 	echo "apt-get install ca-certificates"; \
 	echo "apt-get clean"; \
 	echo "cd /root; git clone $(SELFURL) $(PACKAGE)"; \
