@@ -63,4 +63,4 @@ $(BUILD)/packages.tar: $(BUILD)/debian/script.bash $(BUILD)/qemu-kernel $(BUILD)
 	tar xvf $@
 	rm -f tmp
 
-{release-udeb}: $(addsuffix $(wildcard dg/build/$(PACKAGE)*.udeb),{release})
+{release-udeb}: $(addsuffix $(wildcard $(PACKAGE)*.udeb),{release})
