@@ -35,13 +35,11 @@ $(BUILD)/daily/down/%: | $(BUILD)/daily/down/
 $(BUILD)/artifacts{push}: .github-init
 	(cd $(BUILD)/artifacts/up; for file in *; do name=$$(basename "$$file"); (cd $(PWD); bash dg/github/ul-artifact "$$name" "$(BUILD)/artifacts/up/$$name") && rm -f "$(BUILD)/artifacts/up/$$name"; done)
 
-$(BUILD)/%{artifact}: $(BUILD)/% .github-init
-	$(MKDIR) $(BUILD)/artifacts/up
+$(BUILD)/%{artifact}: $(BUILD)/% .github-init | $(BUILD)/artifacts/up/
 	$(CP) $< $(BUILD)/artifacts/up
 	$(MAKE) $(BUILD)/artifacts{push}
 
-$(BUILD)/%{release}: $(BUILD)/% .github-init
-	$(MKDIR) $(BUILD)/release
+%{release}: % .github-init | $(BUILD)/release/
 	$(CP) $< $(BUILD)/release
 
 $(BUILD)/github-releases{list}: .github-init | $(BUILD)/github-releases/
