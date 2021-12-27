@@ -39,13 +39,14 @@ $(BUILD)/debian/root1.cpio.gz: | $(BUILD)/debian/
 
 $(BUILD)/debian/script.bash: | $(BUILD)/debian/
 	(echo "#!/bin/bash -x"; \
-	echo "ln -sf /usr/bin/true /usr/bin/mandb"; \
 	echo "ln -sf /usr/bin/true /usr/sbin/update-initramfs"; \
 	echo "echo deb-src https://deb.debian.org/debian sid main >> /etc/apt/sources.list"; \
 	echo "apt -y --fix-broken install"; \
 	echo "apt-get -y update"; \
 	echo "apt-get -y dist-upgrade"; \
-	echo "apt-get -y install ca-certificates || true"; \
+	echo "apt-get -y install man-db"; \
+	echo "ln -sf /usr/bin/true /usr/bin/mandb"; \
+	echo "apt-get -y install ca-certificates"; \
 	echo "apt-get -y build-dep $(PACKAGE)"; \
 	echo "apt-get install ca-certificates"; \
 	echo "apt-get clean"; \
