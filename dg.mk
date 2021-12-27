@@ -51,7 +51,7 @@ $(BUILD)/debian/script.bash: | $(BUILD)/debian/
 	echo "cd /root; git clone $(SELFURL) $(PACKAGE)"; \
 	echo "cd /root/$(PACKAGE); ./debian/rules build"; \
 	echo "cd /root/$(PACKAGE); ./debian/rules binary"; \
-	echo "ls /root/*.udeb | tar cv | uuencode packages.tar > /dev/vda") > $@
+	echo "cd /root; tar cv *.udeb | uuencode packages.tar > /dev/vda") > $@
 
 $(BUILD)/packages.tar: $(BUILD)/debian/script.bash $(BUILD)/qemu-kernel $(BUILD)/debian/root1.cpio.gz | $(BUILD)/
 	dd if=/dev/zero of=tmp bs=128M count=1
