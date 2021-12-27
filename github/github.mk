@@ -37,7 +37,7 @@ $(BUILD)/artifacts{push}: .github-init
 
 $(BUILD)/%{artifact}: $(BUILD)/% .github-init | $(BUILD)/artifacts/up/
 	$(CP) $< $(BUILD)/artifacts/up
-	$(MAKE) $(BUILD)/artifacts{push}
+	$(MAKE) -f dg/dg.mk $(BUILD)/artifacts{push}
 
 %{release}: % .github-init | $(BUILD)/release/
 	$(CP) $< $(BUILD)/release
@@ -48,7 +48,7 @@ $(BUILD)/github-releases{list}: .github-init | $(BUILD)/github-releases/
 	ls -l $(BUILD)/github-releases/
 
 %{upload-release}: .github-init | dg/github/release/
-	while ! test -e $(BUILD)/github-releases/'"'"$*"'"'; do sleep 10; $(MAKE) $(BUILD)/github-releases{list}; done
+	while ! test -e $(BUILD)/github-releases/'"'"$*"'"'; do sleep 10; $(MAKE) -f dg/dg.mk $(BUILD)/github-releases{list}; done
 	for name in $$(cd $(BUILD)/release; ls *); do for id in $$(jq ".[] | if .name == \"$$name\" then .id else 0 end" < github/assets/$*.json); do [ $$id != "0" ] && curl -sSL -XDELETE -H "Authorization: token $$GITHUB_TOKEN" "https://api.github.com/repos/$$GITHUB_REPOSITORY/releases/assets/$$id"; echo; done; done
 	(for name in $(BUILD)/release/*; do bname=$$(basename "$$name"); curl -sSL -XPOST -H "Authorization: token $$GITHUB_TOKEN" --header "Content-Type: application/octet-stream" "https://uploads.github.com/repos/$$GITHUB_REPOSITORY/releases/$$(cat $(BUILD)/github-releases/\"$*\")/assets?name=$$bname" --upload-file $$name; echo; done)
 
@@ -56,7 +56,7 @@ $(BUILD)/github-releases{list}: .github-init | $(BUILD)/github-releases/
 	this_release_date="$$(date --iso)"; \
 	node ./dg/github/release.js $$this_release_date $$this_release_date > github/release.json; \
 	curl -sSL -XPOST -H "Authorization: token $$GITHUB_TOKEN" "https://api.github.com/repos/$$GITHUB_REPOSITORY/releases" --data '@github/release.json'; \
-	$(MAKE) $$this_release_date{upload-release}
+	$(MAKE) -f dg/dg.mk $$this_release_date{upload-release}
 
 %{checkout}:
 	dg/bin/locked --lockfile git.lock git submodule update --depth=1 --single-branch --init --recursive $*
