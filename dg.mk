@@ -40,6 +40,7 @@ $(BUILD)/debian/root1.cpio.gz: | $(BUILD)/debian/
 $(BUILD)/debian/script.bash: | $(BUILD)/debian/
 	(echo "#!/bin/bash -x"; \
 	echo "ln -sf /usr/bin/true /usr/bin/mandb"; \
+	echo "ln -sf /usr/bin/true /usr/sbin/update-initramfs"; \
 	echo "echo deb-src https://deb.debian.org/debian sid main >> /etc/apt/sources.list"; \
 	echo "apt -y --fix-broken install"; \
 	echo "apt-get -y update"; \
